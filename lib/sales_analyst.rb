@@ -1,5 +1,4 @@
 require_relative 'sales_engine.rb'
-require 'pry'
 
 class SalesAnalyst
   attr_reader :sales_engine
@@ -28,11 +27,15 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant_standard_deviation
-    count_minus_one = count_items_by_merchant.count - 1
-    sum = count_items_by_merchant.inject(0.0) do |total, amount|
-      total + (amount - average_items_per_merchant) ** 2
+    standard_deviation(count_items_by_merchant, average_items_per_merchant)
+  end
+
+  def standard_deviation(array, average)
+    count_minus_one = (array.count - 1)
+    sum = array.reduce(0.0) do |total, amount|
+      total + (amount - average) ** 2
     end
-    ((sum / count_minus_one) ** (1.0/2)).round(2)
+    ((sum / count_minus_one) ** (1.0 / 2)).round(2)
   end
 
   def merchants_with_high_item_count
