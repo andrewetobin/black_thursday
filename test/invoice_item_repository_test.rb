@@ -46,9 +46,21 @@ class InvoiceItemRepositoryTest < Minitest::Test
     assert_equal 21831, @invoice_item_repo.repo.last.id
   end
 
+  def test_it_can_update_an_entry
+    original_time = @invoice_item_repo.find_by_id(130).updated_at
+    new_attributes = {
+      quantity: 5,
+      unit_price: BigDecimal(14.00, 4)
+    }
+    @invoice_item_repo.update(130, new_attributes)
+    assert_equal 5, @invoice_item_repo.find_by_id(130).quantity
+    assert_equal 14, @invoice_item_repo.find_by_id(130).unit_price
+    assert @invoice_item_repo.find_by_id(130).updated_at > original_time
+  end
 
-
-
-
-
+  def test_delete_an_invoice_item
+    assert_equal @invoice_item_repo.all[4], @invoice_item_repo.find_by_id(5)
+    @invoice_item_repo.delete(5)
+    assert_equal nil, @invoice_item_repo.find_by_id(5)
+  end
 end
