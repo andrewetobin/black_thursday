@@ -2,7 +2,8 @@ require 'time'
 
 class Invoice
   attr_reader :attributes, :id, :customer_id, :merchant_id,
-  :status, :created_at, :updated_at
+  :created_at
+  attr_accessor :status, :updated_at
 
   def initialize(hash = {})
     @attributes = {

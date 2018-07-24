@@ -7,7 +7,7 @@ class InvoiceRepositoryTest < Minitest::Test
 
   def setup
     @invrepo = InvoiceRepository.new(load_file('./data/invoices.csv'))
-
+    @attributes = {customer_id: 999, merchant_id: 12335541, status: "returned", created_at: Time.now, updated_at: Time.now}
   end
 
   def test_it_exists
@@ -45,6 +45,11 @@ class InvoiceRepositoryTest < Minitest::Test
     assert_instance_of Invoice, new_invoice
     assert_equal 4986, new_invoice.id
     assert_equal @invrepo.all[-1], new_invoice
+  end
+
+  def test_update
+    @invrepo.update(4985, @attributes)
+    assert_equal "returned", @invrepo.find_by_id(4985).status
   end
 
 end
