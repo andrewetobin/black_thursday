@@ -8,9 +8,9 @@ class TransactionRepositoryTest < Minitest::Test
   def setup
     @transaction_repo = TransactionRepository.new(load_file('./data/transactions.csv'))
     @attributes = {
-      invoice_id: 8,
-      credit_card_number: '4242424242424242',
-      credit_card_expiration_date: '0220',
+      invoice_id: 14,
+      credit_card_number: '4347424542425242',
+      credit_card_expiration_date: '0720',
       result: 'success',
       created_at: Time.now,
       updated_at: Time.now
@@ -38,6 +38,33 @@ class TransactionRepositoryTest < Minitest::Test
   def test_it_can_find_all_by_credit_card_number
     assert_equal 1, @transaction_repo.find_all_by_credit_card_number('4283701184969401').count
     assert_equal [], @transaction_repo.find_all_by_credit_card_number('4283701184969402')
+  end
+
+  def test_it_can_find_all_by_result
+    assert_equal 4158, @transaction_repo.find_all_by_result(:success).count
+    assert_equal 827, @transaction_repo.find_all_by_result(:failed).count
+    assert_equal [], @transaction_repo.find_all_by_result(:pending)
+  end
+
+  def test_it_can_create_a_new_entry
+    assert_equal 4985, @transaction_repo.repo.last.id
+    @transaction_repo.create(@attributes)
+    assert_equal 4986, @transaction_repo.repo.last.id
+  end
+
+  def test_it_can_update_an_entry
+    @transaction_repo.create(@attributes)
+    original_time = @transaction_repo.find_by_id(10).updated_at
+    new_attributes = {
+      credit_card_number: '1434623812342234',
+      credit_card_expiration_date: '0178',
+      result: 'failure'
+    }
+    @transaction_repo.update(10, new_attributes)
+    assert_equal '1434623812342234', @transaction_repo.find_by_id(10).credit_card_number
+    assert_equal '0178', @transaction_repo.find_by_id(10).credit_card_expiration_date
+    assert_equal 'failure', @transaction_repo.find_by_id(10).result
+    assert @transaction_repo.find_by_id(10).updated_at > original_time
   end
 
 
