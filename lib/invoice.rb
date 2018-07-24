@@ -7,8 +7,8 @@ class Invoice
   def initialize(hash = {})
     @attributes = {
       id:           hash[:id].to_i,
-      customer_id:  hash[:customer_id],
-      merchant_id:  hash[:merchant_id],
+      customer_id:  hash[:customer_id].to_i,
+      merchant_id:  hash[:merchant_id].to_i,
       status:       hash[:status],
       created_at:   hash[:created_at],
       updated_at:   hash[:updated_at]
