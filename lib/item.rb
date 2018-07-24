@@ -6,7 +6,7 @@ class Item
 
   def initialize(hash = {})
     @attributes = {
-    id:  hash[:id].to_i,
+    id:           hash[:id].to_i,
     name:         hash[:name],
     description:  hash[:description],
     unit_price:   BigDecimal(hash[:unit_price]),
