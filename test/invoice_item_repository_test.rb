@@ -35,6 +35,17 @@ class InvoiceItemRepositoryTest < Minitest::Test
     assert_equal [], @invoice_item_repo.find_all_by_item_id(4523043)
   end
 
+  def test_find_invoice_item_id
+    assert_equal 6, @invoice_item_repo.find_all_by_invoice_id(3843).count
+    assert_equal [], @invoice_item_repo.find_all_by_invoice_id(13637)
+  end
+
+  def test_it_can_create_new_invoice_item
+    assert_equal 21830, @invoice_item_repo.repo.last.id
+    @invoice_item_repo.create(@attributes)
+    assert_equal 21831, @invoice_item_repo.repo.last.id
+  end
+
 
 
 
