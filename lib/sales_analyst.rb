@@ -1,5 +1,4 @@
 require_relative 'sales_engine.rb'
-require 'pry'
 
 class SalesAnalyst
   attr_reader :sales_engine
@@ -28,11 +27,15 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant_standard_deviation
-    count_minus_one = count_items_by_merchant.count - 1
-    sum = count_items_by_merchant.inject(0.0) do |total, amount|
-      total + (amount - average_items_per_merchant) ** 2
+    standard_deviation(count_items_by_merchant, average_items_per_merchant)
+  end
+
+  def standard_deviation(array, average)
+    count_minus_one = (array.count - 1)
+    sum = array.reduce(0.0) do |total, amount|
+      total + (amount - average) ** 2
     end
-    ((sum / count_minus_one) ** (1.0/2)).round(2)
+    ((sum / count_minus_one) ** (1.0 / 2)).round(2)
   end
 
   def merchants_with_high_item_count
@@ -48,4 +51,42 @@ class SalesAnalyst
   def merchant_id_paired_with_count
     group_items_by_merchant.keys.zip(count_items_by_merchant)
   end
+
+  def average_item_price_for_merchant(id)
+    items = @sales_engine.items.find_all_by_merchant_id(id)
+    sum = items.reduce(0) { |total, item| total + item.unit_price }
+    (sum / items.count).round(2)
+  end
+
+  def average_average_price_per_merchant
+    sum = @sales_engine.merchants.all.reduce(0) do |total, merchant|
+      total + average_item_price_for_merchant(merchant.id)
+    end
+    (sum / @sales_engine.merchants.repo.count).round(2)
+  end
+
+  def item_price_standard_deviation
+    standard_deviation(all_item_prices, average_total_item_price).round(2)
+  end
+
+  def all_item_prices
+    @sales_engine.items.all.map do |item|
+      item.unit_price
+    end
+  end
+
+  def average_total_item_price
+    sum = @sales_engine.items.all.reduce(0) do |total, item|
+      total + item.unit_price
+    end
+    sum / @sales_engine.items.all.count
+  end
+
+  def golden_items
+    high_price = average_total_item_price + (item_price_standard_deviation * 2)
+    @sales_engine.items.all.each_with_object([]) do |item, array|
+      array << item if item.unit_price >= high_price
+    end
+  end
+
 end

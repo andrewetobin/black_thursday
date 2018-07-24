@@ -31,5 +31,22 @@ class SalesAnalystTest < Minitest::Test
     assert_instance_of Merchant, @sales_analyst.merchants_with_high_item_count.first
   end
 
+  def test_it_can_find_average_item_price_per_merchant
+    assert_equal 16.66, @sales_analyst.average_item_price_for_merchant(12334105)
+  end
+
+  def test_it_can_find_average_average_item_price_per_merchant
+    assert_equal 350.29, @sales_analyst.average_average_price_per_merchant
+  end
+
+  def test_it_can_find_the_price_standard_deviation
+    assert_equal 2900.99, @sales_analyst.item_price_standard_deviation
+  end
+
+  def test_it_can_find_all_golden_items
+    assert_equal 5, @sales_analyst.golden_items.length
+    assert_equal Item, @sales_analyst.golden_items.first.class
+  end
+
 
 end
