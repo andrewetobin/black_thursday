@@ -25,6 +25,16 @@ class InvoiceItemRepositoryTest < Minitest::Test
     assert_equal @invoice_item_repo.repo, @invoice_item_repo.all
   end
 
+  def test_find_by_id_number
+    assert_equal @invoice_item_repo.all[4], @invoice_item_repo.find_by_id(5)
+    assert_equal nil, @invoice_item_repo.find_by_id(34212)
+  end
+
+  def test_find_all_by_item_id
+    assert_equal 25, @invoice_item_repo.find_all_by_item_id(263553296).count
+    assert_equal [], @invoice_item_repo.find_all_by_item_id(4523043)
+  end
+
 
 
 
