@@ -51,4 +51,21 @@ class SalesAnalyst
   def merchant_id_paired_with_count
     group_items_by_merchant.keys.zip(count_items_by_merchant)
   end
+
+  def average_item_price_for_merchant(id)
+    items = @sales_engine.items.find_all_by_merchant_id(id)
+    sum = items.reduce(0) { |total, item| total + item.unit_price }
+    (sum / items.count).round(2)
+  end
+
+  def average_average_price_per_merchant
+    sum = @sales_engine.merchants.all.reduce(0) do |total, merchant|
+      total + average_item_price_for_merchant(merchant.id)
+    end
+    (sum / @sales_engine.merchants.repo.count).round(2)
+  end
+
+
+
+
 end
