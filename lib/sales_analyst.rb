@@ -65,7 +65,28 @@ class SalesAnalyst
     (sum / @sales_engine.merchants.repo.count).round(2)
   end
 
+  def item_price_standard_deviation
+    standard_deviation(all_item_prices, average_total_item_price).round(2)
+  end
 
+  def all_item_prices
+    @sales_engine.items.all.map do |item|
+      item.unit_price
+    end
+  end
 
+  def average_total_item_price
+    sum = @sales_engine.items.all.reduce(0) do |total, item|
+      total + item.unit_price
+    end
+    sum / @sales_engine.items.all.count
+  end
+
+  def golden_items
+    high_price = average_total_item_price + (item_price_standard_deviation * 2)
+    @sales_engine.items.all.each_with_object([]) do |item, array|
+      array << item if item.unit_price >= high_price
+    end
+  end
 
 end
