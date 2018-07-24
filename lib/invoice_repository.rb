@@ -24,8 +24,22 @@ class InvoiceRepository
     end
   end
 
-  def find_all_by_status
-  end 
+  def find_all_by_status(status)
+    @repo.find_all do |invoice|
+      invoice.status == status
+    end
+  end
 
+  def create(attributes)
+    max_id = @repo.max_by do |invoice|
+      invoice.id
+    end
+    new_id = max_id.id + 1
+    attributes[:id] = new_id
+    new_invoice = Invoice.new(attributes)
+
+    @repo << new_invoice
+    new_invoice
+  end
 
 end
