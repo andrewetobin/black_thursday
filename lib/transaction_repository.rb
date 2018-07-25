@@ -30,15 +30,14 @@ class TransactionRepository
   end
 
   def update(id, attributes)
-    new_cc_num = attributes[:credit_card_number]
-    new_expiration = attributes[:credit_card_expiration_date]
-    new_result = attributes[:result]
-    item = find_by_id(id)
-    return if item.nil?
-    item.updated_at = Time.now
-    item.credit_card_number = new_cc_num
-    item.credit_card_expiration_date = new_expiration
-    item.result = new_result
+    transaction = find_by_id(id)
+    return if transaction.nil?
+    attributes.each do |key, value|
+      transaction.credit_card_number = value if key == :credit_card_number
+      transaction.credit_card_expiration_date = value if key == :credit_card_expiration_date
+      transaction.result = value if key == :result
+      transaction.updated_at = Time.now + 1
+    end
   end
 
   def inspect
