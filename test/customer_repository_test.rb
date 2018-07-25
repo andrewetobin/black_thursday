@@ -40,6 +40,24 @@ class CustomerRepositoryTest < Minitest::Test
     assert_equal 22, @customer_repo.find_all_by_last_name('son').length
   end
 
+  def test_it_can_create_a_new_entry
+    assert_equal 1000, @customer_repo.repo.last.id
+    @customer_repo.create(@attributes)
+    assert_equal 1001, @customer_repo.repo.last.id
+  end
+
+  def test_it_can_update_an_entry
+    original_time = @customer_repo.find_by_id(34).updated_at
+    new_attributes = {
+      first_name: 'LeRoi',
+      last_name: 'Moore',
+    }
+    @customer_repo.update(34, new_attributes)
+    assert_equal 'LeRoi', @customer_repo.find_by_id(34).first_name
+    assert_equal 'Moore', @customer_repo.find_by_id(34).last_name
+    assert @customer_repo.find_by_id(34).updated_at > original_time
+  end
+
 
 
 
