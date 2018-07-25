@@ -40,4 +40,8 @@ class TransactionRepository
     item.credit_card_expiration_date = new_expiration
     item.result = new_result
   end
+
+  def inspect
+    "#<#{self.class} #{@repo.size} rows>"
+  end
 end

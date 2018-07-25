@@ -42,7 +42,9 @@ class CustomerRepository
     customer.last_name = new_last_name
   end
 
-
+  def inspect
+    "#<#{self.class} #{@repo.size} rows>"
+  end
 
 
 

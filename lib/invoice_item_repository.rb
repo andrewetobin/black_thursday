@@ -34,7 +34,9 @@ class InvoiceItemRepository
     item.unit_price = new_unit_price
   end
 
-
+  def inspect
+    "#<#{self.class} #{@repo.size} rows>"
+  end
 
 
 end
