@@ -113,10 +113,28 @@ class SalesAnalyst
     merchant_ids_invoices_hash.values.count
   end
 
+  def average_invoices_per_merchant_standard_deviation#3.29
+    x = sum_minus_mean.inject(0) do |sum, number|
+      sum += number
+    end/number_merchant_ids_in_invoices
+    Math.sqrt(x).round(2)
+  end
 
+  def sum_minus_mean#array
+    merchant_id_counts_in_array.map do |number|
+      (number - average_invoices_per_merchant) ** 2
+    end
+  end
 
+  # def top_merchants_by_invoice_count#more 2 SD above mean
+  # end
 
+  def two_sd_above_average_invoice_per_merchant_id
+    (average_invoices_per_merchant_standard_deviation * 2) +
+      average_invoices_per_merchant
+  end
 
+merchant_id_counts_in_array
 
 
 end

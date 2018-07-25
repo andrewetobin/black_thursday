@@ -6,10 +6,10 @@ class SalesAnalystTest < Minitest::Test
     sales_engine = SalesEngine.from_csv(
       items: './data/items.csv',
       merchants: './data/merchants.csv',
-      invoices: './data/invoices_test.csv',
+      invoices: './data/invoices.csv',
       customers: './data/customers.csv',
-      invoice_items: './data/invoice_items_test.csv',
-      transactions: './data/transactions_test.csv'
+      invoice_items: './data/invoice_items.csv',
+      transactions: './data/transactions.csv'
     )
     @sales_analyst = SalesAnalyst.new(sales_engine)
   end
@@ -52,5 +52,12 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 10.49, @sales_analyst.average_invoices_per_merchant
   end
 
-  
+  def test_average_invoices_per_merchant_standard_deviation
+    assert_equal 3.29, @sales_analyst.average_invoices_per_merchant_standard_deviation
+  end
+
+  def test_top_merchants_by_invoice_count
+    assert_equal 17.07, @sales_analyst.two_sd_above_average_invoice_per_merchant_id
+  end
+
 end
