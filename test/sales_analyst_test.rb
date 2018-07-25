@@ -6,10 +6,10 @@ class SalesAnalystTest < Minitest::Test
     sales_engine = SalesEngine.from_csv(
       items: './data/items.csv',
       merchants: './data/merchants.csv',
-      invoices: './data/invoices_test.csv',
+      invoices: './data/invoices.csv',
       customers: './data/customers.csv',
-      invoice_items: './data/invoice_items_test.csv',
-      transactions: './data/transactions_test.csv'
+      invoice_items: './data/invoice_items.csv',
+      transactions: './data/transactions.csv'
     )
     @sales_analyst = SalesAnalyst.new(sales_engine)
   end
@@ -52,5 +52,18 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 10.49, @sales_analyst.average_invoices_per_merchant
   end
 
-  
+  def test_check_invoice_paid
+    assert_equal true, @sales_analyst.invoice_paid_in_full?(1358)
+    assert_equal true, @sales_analyst.invoice_paid_in_full?(3752)
+    assert_equal false, @sales_analyst.invoice_paid_in_full?(1114)
+    assert_equal false, @sales_analyst.invoice_paid_in_full?(4221)
+  end
+
+  def test_it_can_return_the_amount_for_any_invoice
+    assert_equal 24978.08, @sales_analyst.invoice_total(34)
+  end
+
+
+
+
 end
