@@ -89,14 +89,14 @@ class SalesAnalyst
     end
   end
 
-  def average_invoices_per_merchant
+  def average_invoices_per_merchant#10.49
     total = merchant_id_counts_in_array.inject(0) do |sum, number|
       sum += number
     end
     (total / number_merchant_ids_in_invoices).round(2)
   end
 
-  def merchant_ids_invoices_hash
+  def merchant_ids_invoices_hash#hash
     @sales_engine.invoices.repo.group_by do |invoice|
       invoice.merchant_id
     end
