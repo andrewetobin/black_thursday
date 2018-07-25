@@ -52,4 +52,8 @@ class InvoiceRepositoryTest < Minitest::Test
     assert_equal "returned", @invrepo.find_by_id(4985).status
   end
 
+  def test_delete
+    @invrepo.delete(4985)
+    assert_equal nil, @invrepo.find_by_id(4985)
+  end
 end

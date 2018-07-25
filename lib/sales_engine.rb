@@ -1,6 +1,7 @@
 require_relative 'file_loader'
 require_relative 'merchant_repository'
 require_relative 'item_repository'
+require_relative 'invoice_repository'
 require_relative 'sales_analyst'
 
 class SalesEngine
@@ -21,6 +22,10 @@ class SalesEngine
 
   def merchants
     @merchants ||= MerchantRepository.new(load_file(info[:merchants]))
+  end
+
+  def invoices
+    @invoices ||= InvoiceRepository.new(load_file('./data/invoices.csv'))
   end
 
   def analyst
