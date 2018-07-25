@@ -58,6 +58,13 @@ class CustomerRepositoryTest < Minitest::Test
     assert @customer_repo.find_by_id(34).updated_at > original_time
   end
 
+  def test_it_can_delete_customer
+    assert_equal @customer_repo.all[54], @customer_repo.find_by_id(55)
+    @customer_repo.delete(55)
+
+    assert_equal nil, @customer_repo.find_by_id(55)
+  end
+
 
 
 

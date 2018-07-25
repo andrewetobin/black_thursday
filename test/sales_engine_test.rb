@@ -38,12 +38,32 @@ class SalesEngineTest < Minitest::Test
     sales_engine = SalesEngine.from_csv(
       items: './data/items.csv',
       merchants: './data/merchants.csv',
-      invoices: './data/invoices_test.csv',
+      invoices: './data/invoices.csv',
       customers: './data/customers.csv',
-      invoice_items: './data/invoice_items_test.csv',
-      transactions: './data/transactions_test.csv'
+      invoice_items: './data/invoice_items.csv',
+      transactions: './data/transactions.csv'
     )
     assert_instance_of SalesAnalyst, sales_engine.analyst
+  end
+
+  def test_invoices_creates_repository_of_invoices
+    sales_engine = SalesEngine.from_csv(invoices: './data/invoices.csv')
+    assert_instance_of InvoiceRepository, sales_engine.invoices
+  end
+
+  def test_invoices_items_creates_repository_of_invoice_items
+    sales_engine = SalesEngine.from_csv(invoice_items: './data/invoice_items.csv')
+    assert_instance_of InvoiceItemRepository, sales_engine.invoice_items
+  end
+
+  def test_transactions_creates_repository_of_transactions
+    sales_engine = SalesEngine.from_csv(transactions: './data/transactions.csv')
+    assert_instance_of TransactionRepository, sales_engine.transactions
+  end
+
+  def test_customers_creates_repository_of_customers
+    sales_engine = SalesEngine.from_csv(customers: './data/customers.csv')
+    assert_instance_of CustomerRepository, sales_engine.customers
   end
 
 

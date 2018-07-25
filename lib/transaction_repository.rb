@@ -40,8 +40,4 @@ class TransactionRepository
     item.credit_card_expiration_date = new_expiration
     item.result = new_result
   end
-
-
-
-
 end
