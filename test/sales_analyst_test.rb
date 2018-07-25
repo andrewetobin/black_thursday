@@ -48,5 +48,7 @@ class SalesAnalystTest < Minitest::Test
     assert_equal Item, @sales_analyst.golden_items.first.class
   end
 
-
+  def test_average_invoices_per_merchant
+    assert_equal 10.49, @sales_analyst.average_invoices_per_merchant
+  end
 end
