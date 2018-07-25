@@ -67,6 +67,13 @@ class TransactionRepositoryTest < Minitest::Test
     assert @transaction_repo.find_by_id(10).updated_at > original_time
   end
 
+  def test_it_can_delete
+    assert_equal @transaction_repo.all[4], @transaction_repo.find_by_id(5)
+    @transaction_repo.delete(5)
+
+    assert_equal nil, @transaction_repo.find_by_id(5)
+  end
+
 
 
 
