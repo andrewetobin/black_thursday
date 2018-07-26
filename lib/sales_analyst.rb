@@ -205,14 +205,21 @@ class SalesAnalyst
   end
   #{"Saturday"=>729, "Friday"=>701, "Wednesday"=>741, "Monday"=>696, "Sunday"=>708, "Tuesday"=>692, "Thursday"=>718}
 
-  def high_count
+  def average_invoices_per_day_of_week #712
+    invoices_per_day = invoice_number_by_day_hash.values
+    x = invoices_per_day.inject(0) do |total, invoices|
+      total += invoices
+    end/7
+  end
 
+  def standard_deviation_invoices_per_day#18.07
+    array = invoice_number_by_day_hash.values
+    average = average_invoices_per_day_of_week
+    x = standard_deviation(array, average)
   end
 
 
 
-    # [0].created_at
+
 
 end
-
-# @sales_engine.invoices.all[0].created_at

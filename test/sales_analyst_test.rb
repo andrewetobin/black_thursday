@@ -102,7 +102,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_top_days_by_invoice_count
-    assert_equal "Sunday", @sales_analyst.invoice_number_by_day_hash
+    assert_equal 18.07, @sales_analyst.standard_deviation_invoices_per_day
   end
 
 
