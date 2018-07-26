@@ -97,7 +97,7 @@ class SalesAnalyst
   end
 
   def merchant_ids_invoices_hash#hash
-    @sales_engine.invoices.repo.group_by do |invoice|
+    x = @sales_engine.invoices.repo.group_by do |invoice|
       invoice.merchant_id
     end
   end  #returns a hash with each merchant_id as key and
@@ -112,6 +112,7 @@ class SalesAnalyst
   def number_merchant_ids_in_invoices #475
     merchant_ids_invoices_hash.values.count
   end
+
 
   def invoice_paid_in_full?(invoice_id)
     searched_transaction = @sales_engine.transactions.find_all_by_invoice_id(invoice_id)
@@ -132,8 +133,42 @@ class SalesAnalyst
   end
 
 
+  def average_invoices_per_merchant_standard_deviation#3.29
+    x = sum_minus_mean.inject(0) do |sum, number|
+      sum += number
+    end/number_merchant_ids_in_invoices
+    Math.sqrt(x).round(2)
+  end
+
+  def sum_minus_mean#array
+    merchant_id_counts_in_array.map do |number|
+      (number - average_invoices_per_merchant) ** 2
+    end
+  end
 
 
+  # def top_merchants_by_invoice_count#more 2 SD above mean
+  # end
+
+  def two_sd_above_average_invoice_per_merchant_id
+    (average_invoices_per_merchant_standard_deviation * 2) +
+      average_invoices_per_merchant
+  end
+
+  def top_merchants_by_invoice_count
+    x = two_sd_above_average_invoice_per_merchant_id
+     invoices_per_merchant.map do |id, count|
+     @sales_engine.merchants.find_by_id(id) if count >= x
+   end.compact
+  end
+
+  def invoices_per_merchant
+    invoices_per_merchant = Hash.new(0)
+    merchant_ids_invoices_hash.each do |m_id, invoice|
+      invoices_per_merchant[m_id] = invoice.count
+    end
+    invoices_per_merchant
+  end
 
 
 
