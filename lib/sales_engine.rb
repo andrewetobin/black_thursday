@@ -28,10 +28,6 @@ class SalesEngine
     @merchants ||= MerchantRepository.new(load_file(info[:merchants]))
   end
 
-  def invoices
-    @invoices ||= InvoiceRepository.new(load_file('./data/invoices.csv'))
-  end
-
   def analyst
     @analyst = SalesAnalyst.new(self)
   end
