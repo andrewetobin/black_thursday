@@ -49,4 +49,8 @@ class InvoiceRepository
     updated_invoice.attributes[:updated_at] = Time.now
     updated_invoice
   end
+
+  def inspect
+    "#<#{self.class} #{@repo.size} rows>"
+  end
 end

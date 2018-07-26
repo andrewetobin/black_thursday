@@ -33,16 +33,19 @@ class CustomerRepository
   end
 
   def update(id, attributes)
-    new_first_name = attributes[:first_name]
-    new_last_name = attributes[:last_name]
     customer = find_by_id(id)
     return if customer.nil?
-    customer.updated_at = Time.now
-    customer.first_name = new_first_name
-    customer.last_name = new_last_name
+    attributes.each do |key, value|
+      customer.first_name = value if key == :first_name
+      customer.last_name = value if key == :last_name
+    end
+    customer.updated_at = Time.now + 1
+    customer
   end
 
-
+  def inspect
+    "#<#{self.class} #{@repo.size} rows>"
+  end
 
 
 

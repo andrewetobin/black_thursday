@@ -71,6 +71,18 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 10.49, @sales_analyst.average_invoices_per_merchant
   end
 
+  def test_check_invoice_paid
+    assert_equal true, @sales_analyst.invoice_paid_in_full?(1358)
+    assert_equal true, @sales_analyst.invoice_paid_in_full?(3752)
+    assert_equal false, @sales_analyst.invoice_paid_in_full?(1114)
+    assert_equal false, @sales_analyst.invoice_paid_in_full?(4221)
+  end
+
+  def test_it_can_return_the_amount_for_any_invoice
+    assert_equal 24978.08, @sales_analyst.invoice_total(34)
+  end
+
+
 
   def test_average_invoices_per_merchant_standard_deviation
     skip

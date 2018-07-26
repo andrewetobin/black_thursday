@@ -113,6 +113,26 @@ class SalesAnalyst
     merchant_ids_invoices_hash.values.count
   end
 
+
+  def invoice_paid_in_full?(invoice_id)
+    searched_transaction = @sales_engine.transactions.find_all_by_invoice_id(invoice_id)
+    searched_transaction.any? do |transaction|
+      transaction.result == :success
+    end
+  end
+
+  def invoice_total(invoice_id)
+    searched_invoice_items = @sales_engine.invoice_items.find_all_by_invoice_id(invoice_id)
+    costs = searched_invoice_items.map do |invoice_item|
+      invoice_item.quantity * invoice_item.unit_price
+    end
+    number = costs.inject(0) do |total, cost|
+      total + cost
+    end
+    BigDecimal(number, 7)
+  end
+
+
   def average_invoices_per_merchant_standard_deviation#3.29
     x = sum_minus_mean.inject(0) do |sum, number|
       sum += number
@@ -125,6 +145,7 @@ class SalesAnalyst
       (number - average_invoices_per_merchant) ** 2
     end
   end
+
 
   # def top_merchants_by_invoice_count#more 2 SD above mean
   # end
