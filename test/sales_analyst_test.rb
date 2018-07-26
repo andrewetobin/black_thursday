@@ -90,8 +90,19 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_top_merchants_by_invoice_count
+    skip
     assert_equal 12, @sales_analyst.top_merchants_by_invoice_count.count
     assert_instance_of Merchant, @sales_analyst.top_merchants_by_invoice_count[0]
+  end
+
+  def test_bottom_merchants_by_invoice_count
+    skip
+    assert_equal 4, @sales_analyst.bottom_merchants_by_invoice_count.count
+    assert_instance_of Merchant, @sales_analyst.bottom_merchants_by_invoice_count[0]
+  end
+
+  def test_top_days_by_invoice_count
+    assert_equal "Sunday", @sales_analyst.invoice_number_by_day_hash
   end
 
 
