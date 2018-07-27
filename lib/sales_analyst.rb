@@ -184,14 +184,14 @@ class SalesAnalyst
   end
 
   def top_days_by_invoice_count
-    #high count - average invoices per day + std
+    high_count = average_invoices_per_day_of_week + sd_invoices_per_day
     invoice_number_by_day_hash.map do |day, count|
       day if count >= high_count
     end.compact
   end
 
   def invoice_objects_by_day_hash
-    days_array = @sales_engine.invoices.all.group_by do |invoice|
+    @sales_engine.invoices.all.group_by do |invoice|
       invoice.created_at.strftime('%A')
     end
   end
@@ -212,14 +212,34 @@ class SalesAnalyst
     end/7
   end
 
-  def standard_deviation_invoices_per_day#18.07
+  def sd_invoices_per_day#18.07
     array = invoice_number_by_day_hash.values
     average = average_invoices_per_day_of_week
     x = standard_deviation(array, average)
   end
 
+# What percentage of invoices are shipped vs pending vs returned?
+#(takes symbol as argument)
+  def invoice_status(status)
+    decimal = invoices_by_shipping_status[status]
+    (decimal.to_f / total_invoices * 100).round(2)
+  end
 
+  def invoices_by_shipping_status
+    x = @sales_engine.invoices.all.group_by do |invoice|
+      invoice.status.intern
+    end
+    y = x.each do |status, invoices|
+      x[status] = invoices.count
+    end
+  end
+# {"pending"=>1473, "shipped"=>2839, "returned"=>673}
 
-
+  def total_invoices#4985
+    invoices_per_day = invoice_number_by_day_hash.values
+    x = invoices_per_day.inject(0) do |total, invoices|
+      total += invoices
+    end
+  end
 
 end
