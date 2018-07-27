@@ -5,9 +5,10 @@ module RepoHelper
   end
 
   def find_by_id(id)
-    @repo.find do |object|
+    found = @repo.find do |object|
       id == object.id
     end
+    found
   end
 
   def find_by_name(name)
