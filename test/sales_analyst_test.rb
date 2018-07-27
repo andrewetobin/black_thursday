@@ -82,17 +82,43 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 24978.08, @sales_analyst.invoice_total(34)
   end
 
-
-
   def test_average_invoices_per_merchant_standard_deviation
     skip
     assert_equal 3.29, @sales_analyst.average_invoices_per_merchant_standard_deviation
+    assert_instance_of Float, @sales_analyst.average_invoices_per_merchant_standard_deviation
+  end
+
+  def test_average_invoices_per_merchant_standard_deviation
+    skip
+    assert_equal 10.49, @sales_analyst.average_invoices_per_merchant
+    assert_instance_of Float, @sales_analyst.average_invoices_per_merchant
   end
 
   def test_top_merchants_by_invoice_count
+    skip
     assert_equal 12, @sales_analyst.top_merchants_by_invoice_count.count
     assert_instance_of Merchant, @sales_analyst.top_merchants_by_invoice_count[0]
   end
+
+  def test_bottom_merchants_by_invoice_count
+    skip
+    assert_equal 4, @sales_analyst.bottom_merchants_by_invoice_count.count
+    assert_instance_of Merchant, @sales_analyst.bottom_merchants_by_invoice_count[0]
+  end
+
+  def test_top_days_by_invoice_count
+    skip
+    assert_equal 1, @sales_analyst.top_days_by_invoice_count.count
+    assert_equal "Wednesday", @sales_analyst.top_days_by_invoice_count.join
+    assert_instance_of String, @sales_analyst.top_days_by_invoice_count.join
+  end
+
+  def test_invoice_status
+    assert_equal 29.55, @sales_analyst.invoice_status(:pending)
+    assert_equal 56.95, @sales_analyst.invoice_status(:shipped)
+    assert_equal 13.5, @sales_analyst.invoice_status(:returned)
+  end
+
 
 
 
