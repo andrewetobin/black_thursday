@@ -227,7 +227,7 @@ class SalesAnalyst
 
   def invoices_by_shipping_status
     x = @sales_engine.invoices.all.group_by do |invoice|
-      invoice.status.intern
+      invoice.status
     end
     y = x.each do |status, invoices|
       x[status] = invoices.count
