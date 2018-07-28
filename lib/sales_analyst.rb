@@ -32,6 +32,20 @@ class SalesAnalyst
     end
   end
 
+  def merchants_with_only_one_item_registered_in_month(month)
+    merchants_in_month = merchants_grouped_by_month[month]
+    one_item_in_month = merchants_with_only_one_item.select do |merchant|
+      merchants_in_month.include?(merchant)
+    end
+    one_item_in_month
+  end
+
+  def merchants_grouped_by_month
+    @sales_engine.merchants.all.group_by do |merchant|
+      merchant.created_at.strftime('%B')
+    end
+  end
+
   def average_items_per_merchant
     sum = count_items_by_merchant.inject(0) do |sum, number|
       sum += number
