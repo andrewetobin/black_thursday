@@ -17,57 +17,48 @@ class SalesAnalystTest < Minitest::Test
 
 
   def test_it_exists
-    skip
     assert_instance_of SalesAnalyst, @sales_analyst
   end
 
 
   def test_average_items_per_merchant
-    skip
     assert_equal 2.88, @sales_analyst.average_items_per_merchant
   end
 
 
   def test_average_items_per_merchant_standard_deviation
-    skip
     assert_equal 3.26, @sales_analyst.average_items_per_merchant_standard_deviation
   end
 
 
   def test_merchants_with_high_item_count
-    skip
     assert_equal 52, @sales_analyst.merchants_with_high_item_count.count
     assert_instance_of Merchant, @sales_analyst.merchants_with_high_item_count.first
   end
 
 
   def test_it_can_find_average_item_price_per_merchant
-    skip
     assert_equal 16.66, @sales_analyst.average_item_price_for_merchant(12334105)
   end
 
 
   def test_it_can_find_average_average_item_price_per_merchant
-    skip
     assert_equal 350.29, @sales_analyst.average_average_price_per_merchant
   end
 
 
   def test_it_can_find_the_price_standard_deviation
-    skip
     assert_equal 2900.99, @sales_analyst.item_price_standard_deviation
   end
 
 
   def test_it_can_find_all_golden_items
-    skip
     assert_equal 5, @sales_analyst.golden_items.length
     assert_equal Item, @sales_analyst.golden_items.first.class
   end
 
 
   def test_average_invoices_per_merchant
-    skip
     assert_equal 10.49, @sales_analyst.average_invoices_per_merchant
   end
 
@@ -83,31 +74,26 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_average_invoices_per_merchant_standard_deviation
-    skip
     assert_equal 3.29, @sales_analyst.average_invoices_per_merchant_standard_deviation
     assert_instance_of Float, @sales_analyst.average_invoices_per_merchant_standard_deviation
   end
 
   def test_average_invoices_per_merchant_standard_deviation
-    skip
     assert_equal 10.49, @sales_analyst.average_invoices_per_merchant
     assert_instance_of Float, @sales_analyst.average_invoices_per_merchant
   end
 
   def test_top_merchants_by_invoice_count
-    skip
     assert_equal 12, @sales_analyst.top_merchants_by_invoice_count.count
     assert_instance_of Merchant, @sales_analyst.top_merchants_by_invoice_count[0]
   end
 
   def test_bottom_merchants_by_invoice_count
-    skip
     assert_equal 4, @sales_analyst.bottom_merchants_by_invoice_count.count
     assert_instance_of Merchant, @sales_analyst.bottom_merchants_by_invoice_count[0]
   end
 
   def test_top_days_by_invoice_count
-    skip
     assert_equal 1, @sales_analyst.top_days_by_invoice_count.count
     assert_equal "Wednesday", @sales_analyst.top_days_by_invoice_count.join
     assert_instance_of String, @sales_analyst.top_days_by_invoice_count.join
@@ -119,6 +105,16 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 13.5, @sales_analyst.invoice_status(:returned)
   end
 
+  def test_it_can_find_merchants_with_pending_invoices
+    assert_equal 467, @sales_analyst.merchants_with_pending_invoices.length
+    assert_equal Merchant, @sales_analyst.merchants_with_pending_invoices.first.class
+  end
+
+  def test_it_can_find_merchants_with_only_one_item
+    assert_equal Array, @sales_analyst.merchants_with_only_one_item.class
+    assert_equal 243, @sales_analyst.merchants_with_only_one_item.length
+    assert_equal Merchant, @sales_analyst.merchants_with_only_one_item.first.class
+  end
 
 
 

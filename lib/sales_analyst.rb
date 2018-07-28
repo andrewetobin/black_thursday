@@ -7,6 +7,19 @@ class SalesAnalyst
     @sales_engine = sales_engine
   end
 
+  def merchants_with_only_one_item
+    merchants = id_counts.delete_if do |merchant, count|
+      count != 1
+    end
+    merchants.map do |merchant, count|
+      @sales_engine.merchants.find_by_id(merchant)
+    end
+  end
+
+  def id_counts
+    group_items_by_merchant.keys.zip(count_items_by_merchant)
+  end
+
   def group_items_by_merchant
     @sales_engine.items.all.group_by do |item|
       item.merchant_id
@@ -241,5 +254,15 @@ class SalesAnalyst
       total += invoices
     end
   end
+
+  def merchants_with_pending_invoices
+    pendings = @sales_engine.invoices.all.map do |invoice|
+      invoice.merchant_id unless invoice_paid_in_full?(invoice.id)
+    end.compact
+    pendings.map do |merchant_id|
+      @sales_engine.merchants.find_by_id(merchant_id)
+    end.uniq
+  end
+
 
 end
