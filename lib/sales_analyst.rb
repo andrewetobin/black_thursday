@@ -243,11 +243,18 @@ class SalesAnalyst
   end
 
   def total_revenue_by_date(date)
-    x = @sales_engine.invoices.find_all_by_status(:shipped)
-    y = @sales_engine.invoices.find_all_by_status(:pending)
+    invoices = @sales_engine.invoices.all.find_all do |invoice|
+      invoice.created_at.to_s[0...10] == date.to_s[0...10]
+    end
+    #result is array of invoices with corresponding date
 
-    y = x.find_all do |transaction|
-      transaction.created_at.to_s[0...9] == date.to_s[0...9]
+    invoice_ids = invoices.map do |invoice|
+      invoice.id
+    end
+    #result is array of invoice ids
+
+    total_revenue = invoice_ids.inject(0) do |total, invoice_id|
+      total += invoice_total(invoice_id)
     end
   end
 end

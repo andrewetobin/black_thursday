@@ -121,11 +121,12 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_total_revenue_by_date
-    date = Time.parse("2012-02-26")
+    date = Time.parse("2009-02-07")
     assert_instance_of BigDecimal, @sales_analyst.total_revenue_by_date(date)
-    assert_equal 21067.77, @sales_analyst.total_revenue_by_date(date)
+    assert_equal 21067.77, @sales_analyst.total_revenue_by_date(date).to_f
   end
 
+  
 
 
 
