@@ -142,5 +142,13 @@ class SalesAnalystTest < Minitest::Test
     assert_equal Merchant, @sales_analyst.merchants_with_only_one_item_registered_in_month('March').last.class
   end
 
+  def test_it_can_find_most_sold_item_for_merchant
+    assert_equal 263411587, @sales_analyst.most_sold_item_for_merchant(12336111).first.id
+    assert_equal "Painting &quot;Purple peonies&quot;", @sales_analyst.most_sold_item_for_merchant(12336111).first.name
+    assert_instance_of Item, @sales_analyst.most_sold_item_for_merchant(12336111).first
+    assert_equal 263411851, @sales_analyst.most_sold_item_for_merchant(12335853).first.id
+    assert_equal 4, @sales_analyst.most_sold_item_for_merchant(12337105).length
+  end
+
 
 end
