@@ -113,7 +113,6 @@ class SalesAnalyst
     merchant_ids_invoices_hash.values.count
   end
 
-
   def invoice_paid_in_full?(invoice_id)
     searched_transaction = @sales_engine.transactions.find_all_by_invoice_id(invoice_id)
     searched_transaction.any? do |transaction|
@@ -145,7 +144,6 @@ class SalesAnalyst
       (number - average_invoices_per_merchant) ** 2
     end
   end
-
 
   # def top_merchants_by_invoice_count#more 2 SD above mean
   # end
@@ -257,4 +255,9 @@ class SalesAnalyst
       total += invoice_total(invoice_id)
     end
   end
+
+  def top_revenue_earners(number)
+
+  end
+
 end
