@@ -242,4 +242,12 @@ class SalesAnalyst
     end
   end
 
+  def total_revenue_by_date(date)
+    x = @sales_engine.invoices.find_all_by_status(:shipped)
+    y = @sales_engine.invoices.find_all_by_status(:pending)
+
+    y = x.find_all do |transaction|
+      transaction.created_at.to_s[0...9] == date.to_s[0...9]
+    end
+  end
 end

@@ -114,10 +114,18 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_invoice_status
+    skip
     assert_equal 29.55, @sales_analyst.invoice_status(:pending)
     assert_equal 56.95, @sales_analyst.invoice_status(:shipped)
     assert_equal 13.5, @sales_analyst.invoice_status(:returned)
   end
+
+  def test_total_revenue_by_date
+    date = Time.parse("2012-02-26")
+    assert_instance_of BigDecimal, @sales_analyst.total_revenue_by_date(date)
+    assert_equal 21067.77, @sales_analyst.total_revenue_by_date(date)
+  end
+
 
 
 
