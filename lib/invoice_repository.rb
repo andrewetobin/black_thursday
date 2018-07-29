@@ -25,7 +25,7 @@ class InvoiceRepository
   end
 
   def find_all_by_status(status)
-    @repo.find_all do |invoice|
+    x = @repo.find_all do |invoice|
       invoice.status == status
     end
   end

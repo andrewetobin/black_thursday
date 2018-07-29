@@ -37,8 +37,8 @@ class InvoiceRepositoryTest < Minitest::Test
   end
 
   def test_find_all_by_status
-    assert_equal 673, @invrepo.find_all_by_status("returned").count
-    assert_equal [], @invrepo.find_all_by_status("none")
+    assert_equal 673, @invrepo.find_all_by_status(:returned).count
+    assert_equal [], @invrepo.find_all_by_status(:none)
   end
 
   def test_create
@@ -50,7 +50,7 @@ class InvoiceRepositoryTest < Minitest::Test
 
   def test_update
     @invrepo.update(4985, @attributes)
-    assert_equal "returned", @invrepo.find_by_id(4985).status
+    assert_equal :returned, @invrepo.find_by_id(4985).status
   end
 
   def test_delete
