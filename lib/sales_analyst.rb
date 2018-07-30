@@ -45,7 +45,7 @@ class SalesAnalyst
     successful_items_per_merchant_id(merchant_id).map do |invoice_item|
       item_quantities[invoice_item.item_id] += invoice_item.quantity
     end
-    high_item_from_item_ids_with_values(item_quantities)
+    high_item_from_ids_with_values(item_quantities)
   end
 
   def successful_items_per_merchant_id(merchant_id)
@@ -56,7 +56,32 @@ class SalesAnalyst
     end.flatten
   end
 
-  def high_item_from_item_ids_with_values(hash)
+  def high_item_from_ids_with_values(hash)
+    high_item_value = hash.values.max
+    hash.keep_if do | key, value|
+      value == high_item_value
+    end
+    hash.keys.map do |item_id|
+      @sales_engine.items.find_by_id(item_id)
+    end
+  end
+
+  def best_item_for_merchant(merchant_id)
+    invoice_items = successful_items_per_merchant_id(merchant_id)
+    item_id_unit_prices = invoice_items_with_total_price(invoice_items)
+    high_item_from_ids_with_values(item_id_unit_prices).first
+  end
+
+  def invoice_items_with_total_price(array)
+    invoice_items_with_price = Hash.new(0)
+    array.map do |invoice_item|
+      total = (invoice_item.unit_price * invoice_item.quantity)
+      invoice_items_with_price[invoice_item.item_id] += total
+    end
+    invoice_items_with_price
+  end
+
+  def high_item_from_ids_with_values(hash)
     high_item_value = hash.values.max
     hash.keep_if { | key, value| value == high_item_value }
     hash.keys.map { |item_id| @sales_engine.items.find_by_id(item_id) }
