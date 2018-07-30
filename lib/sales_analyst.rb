@@ -97,7 +97,7 @@ class SalesAnalyst
   end
 
   def merchant_ids_invoices_hash#hash
-    x = @sales_engine.invoices.repo.group_by do |invoice|
+    @sales_engine.invoices.repo.group_by do |invoice|
       invoice.merchant_id
     end
   end  #returns a hash with each merchant_id as key and
@@ -131,7 +131,6 @@ class SalesAnalyst
     BigDecimal(number, 7)
   end
 
-
   def average_invoices_per_merchant_standard_deviation#3.29
     x = sum_minus_mean.inject(0) do |sum, number|
       sum += number
@@ -144,9 +143,6 @@ class SalesAnalyst
       (number - average_invoices_per_merchant) ** 2
     end
   end
-
-  # def top_merchants_by_invoice_count#more 2 SD above mean
-  # end
 
   def two_sd_above_average_invoice_per_merchant_id
     (average_invoices_per_merchant_standard_deviation * 2) +
@@ -172,7 +168,6 @@ class SalesAnalyst
     x = two_sd_below_average_invoice_per_merchant_id
      invoices_per_merchant.map do |id, count|
      @sales_engine.merchants.find_by_id(id) if count < x
-
    end.compact
   end
 
@@ -216,8 +211,6 @@ class SalesAnalyst
     x = standard_deviation(array, average)
   end
 
-# What percentage of invoices are shipped vs pending vs returned?
-#(takes symbol as argument)
   def invoice_status(status)
     decimal = invoices_by_shipping_status[status]
     (decimal.to_f / total_invoices * 100).round(2)
@@ -244,20 +237,31 @@ class SalesAnalyst
     invoices = @sales_engine.invoices.all.find_all do |invoice|
       invoice.created_at.to_s[0...10] == date.to_s[0...10]
     end
-    #result is array of invoices with corresponding date
-
     invoice_ids = invoices.map do |invoice|
       invoice.id
     end
-    #result is array of invoice ids
+    total_revenue(invoice_ids)
+  end
 
+  def total_revenue(invoice_ids)
     total_revenue = invoice_ids.inject(0) do |total, invoice_id|
-      total += invoice_total(invoice_id)
+      total += invoice_total(invoice_id.to_f)
     end
   end
 
-  def top_revenue_earners(number)
-
+  def revenue_by_merchant(merchant_id)
+    merchant_invoices = @sales_engine.invoices.find_all_by_merchant_id(merchant_id)
+    invoice_array = merchant_invoices.map do |invoice|
+      invoice.id
+    end
+    total_revenue(invoice_array)
   end
+    # invoice_total = invoice_id_array.inject(0) do |merchant_total, invoice_total|
+    #   merchant_total += invoice_total
+    # end.to_f
+
+
+
+
 
 end
