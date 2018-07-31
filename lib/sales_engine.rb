@@ -47,8 +47,4 @@ class SalesEngine
   def transactions
     @transactions ||= TransactionRepository.new(load_file(info[:transactions]))
   end
-
-
-
-
 end

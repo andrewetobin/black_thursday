@@ -28,7 +28,4 @@ class TransactionTest < Minitest::Test
     assert_equal Time.parse('2018-07-24 13:37:32 -0600'), @transaction.created_at
     assert_equal Time.parse('2018-07-24 13:39:12 -0600'), @transaction.updated_at
   end
-
-
-
 end

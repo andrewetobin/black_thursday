@@ -33,14 +33,4 @@ class InvoiceItemTest < Minitest::Test
     refute_equal @invoice_item.unit_price.inspect, '10.99'
     assert_equal @invoice_item.unit_price_to_dollars.inspect, 10.99.inspect
   end
-
-
-
-
-
-
-
-
-
-
 end

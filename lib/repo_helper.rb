@@ -27,6 +27,4 @@ module RepoHelper
       item_invoice.invoice_id == id
     end
   end
-
-
 end
