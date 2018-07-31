@@ -128,9 +128,10 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_top_revenue_earners
-    # assert_equal 10, @sales_analyst.top_revenue_earners(10).count
-    # assert_instance_of Merchant, @sales_analyst.top_revenue_earners(10)[0]
-    assert_equal [], @sales_analyst.revenue_by_merchant_each
+    assert_equal 10, @sales_analyst.top_revenue_earners(10).count
+    assert_equal 20, @sales_analyst.top_revenue_earners.count
+    assert_instance_of Merchant, @sales_analyst.top_revenue_earners(10)[0]
+    assert_equal 12334634, @sales_analyst.top_revenue_earners(10)[0].id
   end
 
   def test_revenue_by_merchant
