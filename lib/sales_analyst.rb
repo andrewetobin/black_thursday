@@ -256,11 +256,34 @@ class SalesAnalyst
     end
     total_revenue(invoice_array)
   end
-    # invoice_total = invoice_id_array.inject(0) do |merchant_total, invoice_total|
-    #   merchant_total += invoice_total
-    # end.to_f
 
+  def revenue_by_merchant_each
+    x = @sales_engine.invoices.all.map do |invoice|
+      invoice.merchant_id
+    end.uniq
 
+    y = x.map do |merchant_id|
+      revenue_by_merchant(merchant_id)
+    end
+
+    a = y.map do |number|
+      number.to_f
+    end
+
+    z = a.zip(x)
+    w = z.sort.reverse[0..19]
+
+    e = w.map do |rev_merch|
+    @sales_engine.merchants.find_by_id(rev_merch[1])
+    end
+    e
+    binding.pry
+    # .sort.reverse[0..19]
+    # y
+  end
+
+# 274391.32 12334634
+# 149962.99 12334159
 
 
 
