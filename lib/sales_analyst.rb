@@ -7,6 +7,19 @@ class SalesAnalyst
     @sales_engine = sales_engine
   end
 
+  def merchants_with_only_one_item
+    merchants = id_counts.delete_if do |merchant, count|
+      count != 1
+    end
+    merchants.map do |merchant, count|
+      @sales_engine.merchants.find_by_id(merchant)
+    end
+  end
+
+  def id_counts
+    group_items_by_merchant.keys.zip(count_items_by_merchant)
+  end
+
   def group_items_by_merchant
     @sales_engine.items.all.group_by do |item|
       item.merchant_id
@@ -16,6 +29,67 @@ class SalesAnalyst
   def count_items_by_merchant
     group_items_by_merchant.values.map do |value|
       value.count
+    end
+  end
+
+  def merchants_with_only_one_item_registered_in_month(month)
+    merchants_in_month = merchants_grouped_by_month[month]
+    one_item_in_month = merchants_with_only_one_item.select do |merchant|
+      merchants_in_month.include?(merchant)
+    end
+    one_item_in_month
+  end
+
+  def most_sold_item_for_merchant(merchant_id)
+    item_quantities = Hash.new(0)
+    successful_items_per_merchant_id(merchant_id).map do |invoice_item|
+      item_quantities[invoice_item.item_id] += invoice_item.quantity
+    end
+    high_item_from_ids_with_values(item_quantities)
+  end
+
+  def successful_items_per_merchant_id(merchant_id)
+    all_invoices = @sales_engine.invoices.find_all_by_merchant_id(merchant_id)
+    all_invoices.keep_if { |invoice| invoice_paid_in_full?(invoice.id) }
+    all_invoices.map do |invoice|
+      @sales_engine.invoice_items.find_all_by_invoice_id(invoice.id)
+    end.flatten
+  end
+
+  def high_item_from_ids_with_values(hash)
+    high_item_value = hash.values.max
+    hash.keep_if do | key, value|
+      value == high_item_value
+    end
+    hash.keys.map do |item_id|
+      @sales_engine.items.find_by_id(item_id)
+    end
+  end
+
+  def best_item_for_merchant(merchant_id)
+    invoice_items = successful_items_per_merchant_id(merchant_id)
+    item_id_unit_prices = invoice_items_with_total_price(invoice_items)
+    high_item_from_ids_with_values(item_id_unit_prices).first
+  end
+
+  def invoice_items_with_total_price(array)
+    invoice_items_with_price = Hash.new(0)
+    array.map do |invoice_item|
+      total = (invoice_item.unit_price * invoice_item.quantity)
+      invoice_items_with_price[invoice_item.item_id] += total
+    end
+    invoice_items_with_price
+  end
+
+  def high_item_from_ids_with_values(hash)
+    high_item_value = hash.values.max
+    hash.keep_if { | key, value| value == high_item_value }
+    hash.keys.map { |item_id| @sales_engine.items.find_by_id(item_id) }
+  end
+
+  def merchants_grouped_by_month
+    @sales_engine.merchants.all.group_by do |merchant|
+      merchant.created_at.strftime('%B')
     end
   end
 
@@ -229,6 +303,16 @@ class SalesAnalyst
     x = invoices_per_day.inject(0) do |total, invoices|
       total += invoices
     end
+  end
+
+
+  def merchants_with_pending_invoices
+    pendings = @sales_engine.invoices.all.map do |invoice|
+      invoice.merchant_id unless invoice_paid_in_full?(invoice.id)
+    end.compact
+    pendings.map do |merchant_id|
+      @sales_engine.merchants.find_by_id(merchant_id)
+    end.uniq
   end
 
   def total_revenue_by_date(date)
