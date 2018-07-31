@@ -255,8 +255,32 @@ class SalesAnalyst
     total_revenue(invoice_array)
   end
 
-  def sort_merchant_revenue
-  end 
+  def top_revenue_earners(n = 20)
+    merchants_and_revenue = hash_compact(total_revenue_per_merchant)
+    merchants_and_revenue.keep_if do |merchant_id, revenue|
+      merchants_and_revenue.values.sort[-n..-1].include?(revenue)
+    end
+    hash_to_array_by_value(merchants_and_revenue).map do |merchant_id|
+      @sales_engine.merchants.find_by_id(merchant_id)
+    end.reverse
+  end
+
+  def hash_compact(hash)
+  hash.delete_if do |key, value|
+    value.nil?
+    end
+  end
+
+  def hash_to_array_by_value(hash)
+  sorted_values = hash.values.sort
+  array = []
+  sorted_values.each do |value|
+    hash.each do |x, y|
+      array << x if y == value
+    end
+  end
+  array.uniq
+  end
 
   def total_revenue_per_merchant
       merchants = {}
@@ -273,7 +297,4 @@ class SalesAnalyst
       invoice.merchant_id
     end
   end
-
-
-
 end
