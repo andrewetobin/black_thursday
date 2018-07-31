@@ -163,30 +163,29 @@ class SalesAnalyst
     end
   end
 
-  def average_invoices_per_merchant#10.49
+  def average_invoices_per_merchant
     total = merchant_id_counts_in_array.inject(0) do |sum, number|
       sum += number
     end
     (total / number_merchant_ids_in_invoices).round(2)
   end
 
-  def merchant_ids_invoices_hash#hash
-    x = @sales_engine.invoices.repo.group_by do |invoice|
+  def merchant_ids_invoices_hash
+    @sales_engine.invoices.repo.group_by do |invoice|
       invoice.merchant_id
     end
-  end  #returns a hash with each merchant_id as key and
-    # each key has 1 array w/ every invoice instance as an index
+  end
 
-  def merchant_id_counts_in_array#array with numbers of invoices per merchant_id
+
+  def merchant_id_counts_in_array
     merchant_ids_invoices_hash.map do |key, value|
       value.count.to_f
     end
   end
 
-  def number_merchant_ids_in_invoices #475
+  def number_merchant_ids_in_invoices
     merchant_ids_invoices_hash.values.count
   end
-
 
   def invoice_paid_in_full?(invoice_id)
     searched_transaction = @sales_engine.transactions.find_all_by_invoice_id(invoice_id)
@@ -206,8 +205,7 @@ class SalesAnalyst
     BigDecimal(number, 7)
   end
 
-
-  def average_invoices_per_merchant_standard_deviation#3.29
+  def average_invoices_per_merchant_standard_deviation
     x = sum_minus_mean.inject(0) do |sum, number|
       sum += number
     end/number_merchant_ids_in_invoices
@@ -219,10 +217,6 @@ class SalesAnalyst
       (number - average_invoices_per_merchant) ** 2
     end
   end
-
-
-  # def top_merchants_by_invoice_count#more 2 SD above mean
-  # end
 
   def two_sd_above_average_invoice_per_merchant_id
     (average_invoices_per_merchant_standard_deviation * 2) +
@@ -248,7 +242,6 @@ class SalesAnalyst
     x = two_sd_below_average_invoice_per_merchant_id
      invoices_per_merchant.map do |id, count|
      @sales_engine.merchants.find_by_id(id) if count < x
-
    end.compact
   end
 
@@ -277,23 +270,20 @@ class SalesAnalyst
     end
     invoice_by_day_hash
   end
-  #{"Saturday"=>729, "Friday"=>701, "Wednesday"=>741, "Monday"=>696, "Sunday"=>708, "Tuesday"=>692, "Thursday"=>718}
 
-  def average_invoices_per_day_of_week #712
+  def average_invoices_per_day_of_week
     invoices_per_day = invoice_number_by_day_hash.values
     x = invoices_per_day.inject(0) do |total, invoices|
       total += invoices
     end/7
   end
 
-  def sd_invoices_per_day#18.07
+  def sd_invoices_per_day
     array = invoice_number_by_day_hash.values
     average = average_invoices_per_day_of_week
     x = standard_deviation(array, average)
   end
 
-# What percentage of invoices are shipped vs pending vs returned?
-#(takes symbol as argument)
   def invoice_status(status)
     decimal = invoices_by_shipping_status[status]
     (decimal.to_f / total_invoices * 100).round(2)
@@ -307,14 +297,14 @@ class SalesAnalyst
       x[status] = invoices.count
     end
   end
-# {"pending"=>1473, "shipped"=>2839, "returned"=>673}
 
-  def total_invoices#4985
+  def total_invoices
     invoices_per_day = invoice_number_by_day_hash.values
     x = invoices_per_day.inject(0) do |total, invoices|
       total += invoices
     end
   end
+
 
   def merchants_with_pending_invoices
     pendings = @sales_engine.invoices.all.map do |invoice|
@@ -325,5 +315,70 @@ class SalesAnalyst
     end.uniq
   end
 
+  def total_revenue_by_date(date)
+    invoices = @sales_engine.invoices.all.find_all do |invoice|
+      invoice.created_at.to_s[0...10] == date.to_s[0...10]
+    end
+    invoice_ids = invoices.map do |invoice|
+      invoice.id
+    end
+    total_revenue(invoice_ids)
+  end
 
+  def total_revenue(invoice_ids)
+    total_revenue = invoice_ids.inject(0) do |total, invoice_id|
+      total += invoice_total(invoice_id.to_f)
+    end
+  end
+
+  def revenue_by_merchant(merchant_id)
+    merchant_invoices = @sales_engine.invoices.find_all_by_merchant_id(merchant_id)
+    invoice_array = merchant_invoices.map do |invoice|
+      invoice.id
+    end
+    total_revenue(invoice_array)
+  end
+
+  def top_revenue_earners(n = 20)
+    merchants_and_revenue = hash_compact(total_revenue_per_merchant)
+    merchants_and_revenue.keep_if do |merchant_id, revenue|
+      merchants_and_revenue.values.sort[-n..-1].include?(revenue)
+    end
+    hash_to_array_by_value(merchants_and_revenue).map do |merchant_id|
+      @sales_engine.merchants.find_by_id(merchant_id)
+    end.reverse
+  end
+
+  def hash_compact(hash)
+  hash.delete_if do |key, value|
+    value.nil?
+    end
+  end
+
+  def hash_to_array_by_value(hash)
+  sorted_values = hash.values.sort
+  array = []
+  sorted_values.each do |value|
+    hash.each do |x, y|
+      array << x if y == value
+    end
+  end
+  array.uniq
+  end
+
+  def total_revenue_per_merchant
+      merchants = {}
+      invoices_grouped_by_merchant.each do |merchant_id, invoices|
+        merchants[merchant_id] = invoices.map do |invoice|
+          invoice_total(invoice.id) if invoice_paid_in_full?(invoice.id)
+        end.compact.inject(:+)
+      end
+      merchants
+  end
+
+  def invoices_grouped_by_merchant
+    @sales_engine.invoices.all.group_by do |invoice|
+      invoice.merchant_id
+    end
+  end
 end

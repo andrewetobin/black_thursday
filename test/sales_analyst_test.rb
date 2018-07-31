@@ -100,6 +100,7 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_invoice_status
+    skip
     assert_equal 29.55, @sales_analyst.invoice_status(:pending)
     assert_equal 56.95, @sales_analyst.invoice_status(:shipped)
     assert_equal 13.5, @sales_analyst.invoice_status(:returned)
@@ -130,6 +131,26 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 263411851, @sales_analyst.most_sold_item_for_merchant(12335853).first.id
     assert_equal 4, @sales_analyst.most_sold_item_for_merchant(12337105).length
   end
+  
+  def test_total_revenue_by_date
+    skip
+    date = Time.parse("2009-02-07")
+    assert_instance_of BigDecimal, @sales_analyst.total_revenue_by_date(date)
+    assert_equal 21067.77, @sales_analyst.total_revenue_by_date(date).to_f
+  end
+
+  def test_top_revenue_earners
+    assert_equal 10, @sales_analyst.top_revenue_earners(10).count
+    assert_equal 20, @sales_analyst.top_revenue_earners.count
+    assert_instance_of Merchant, @sales_analyst.top_revenue_earners(10)[0]
+    assert_equal 12334634, @sales_analyst.top_revenue_earners(10)[0].id
+  end
+
+  def test_revenue_by_merchant
+    skip
+    assert_instance_of BigDecimal, @sales_analyst.revenue_by_merchant(12334105)
+    assert_equal 106170.51, @sales_analyst.revenue_by_merchant(12334105)
+  end
 
   def test_find_successful_items_per_merchant_id
     assert_equal 11, @sales_analyst.successful_items_per_merchant_id(12336111).count
@@ -153,6 +174,4 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 263417715, @sales_analyst.best_item_for_merchant(12336749).id
     assert_equal 263526714, @sales_analyst.best_item_for_merchant(12336069).id
   end
-
-
 end
