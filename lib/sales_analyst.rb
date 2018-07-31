@@ -255,9 +255,18 @@ class SalesAnalyst
     total_revenue(invoice_array)
   end
 
+  def sort_merchant_revenue
+  end 
 
-
-
+  def total_revenue_per_merchant
+      merchants = {}
+      invoices_grouped_by_merchant.each do |merchant_id, invoices|
+        merchants[merchant_id] = invoices.map do |invoice|
+          invoice_total(invoice.id) if invoice_paid_in_full?(invoice.id)
+        end.compact.inject(:+)
+      end
+      merchants
+  end
 
   def invoices_grouped_by_merchant
     @sales_engine.invoices.all.group_by do |invoice|
@@ -265,6 +274,6 @@ class SalesAnalyst
     end
   end
 
-  
+
 
 end
