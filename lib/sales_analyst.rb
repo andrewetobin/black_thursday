@@ -229,6 +229,4 @@ class SalesAnalyst
       total += invoices
     end
   end
-
-  
 end

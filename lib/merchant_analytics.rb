@@ -152,4 +152,13 @@ module MerchantAnalytics
       invoice.merchant_id
     end
   end
+
+  def nil_to_zero(hash)
+    zero_hash = {}
+    hash.each do |key, value|
+      value = 0 if value.nil?
+      zero_hash[key] = value
+    end
+    zero_hash
+  end 
 end
