@@ -162,4 +162,16 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 263417715, @sales_analyst.best_item_for_merchant(12336749).id
     assert_equal 263526714, @sales_analyst.best_item_for_merchant(12336069).id
   end
+
+  def test_changing_values_from_nil_to_zero
+    hash = {"a" => 1, "b" => 2, "c" => 3, "d" => nil}
+    expected = {"a" => 1, "b" => 2, "c" => 3, "d" => 0}
+    assert_equal expected, @sales_analyst.nil_to_zero(hash)
+  end
+
+  def test_ranks_merchants
+    assert_equal Merchant, @sales_analyst.merchants_ranked_by_revenue.first.class
+    assert_equal 12334634, @sales_analyst.merchants_ranked_by_revenue.first.id
+    assert_equal 12336175, @sales_analyst.merchants_ranked_by_revenue.last.id
+  end
 end
