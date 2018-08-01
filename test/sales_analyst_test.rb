@@ -168,4 +168,10 @@ class SalesAnalystTest < Minitest::Test
     expected = {"a" => 1, "b" => 2, "c" => 3, "d" => 0}
     assert_equal expected, @sales_analyst.nil_to_zero(hash)
   end
+
+  def test_ranks_merchants
+    assert_equal Merchant, @sales_analyst.merchants_ranked_by_revenue.first.class
+    assert_equal 12335150, @sales_analyst.merchants_ranked_by_revenue.first.id
+    assert_equal 12334343, @sales_analyst.merchants_ranked_by_revenue.last.id
+  end 
 end
