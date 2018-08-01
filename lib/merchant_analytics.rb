@@ -153,6 +153,17 @@ module MerchantAnalytics
     end
   end
 
+  def merchants_ranked_by_revenue
+    total = nil_to_zero(total_revenue_per_merchant)
+    sorted = total.sort_by do |merchant|
+      merchant[1]
+    end.reverse
+    sorted.map do |merchant|
+      @sales_engine.merchants.find_by_id(merchant[0])
+    end
+
+  end
+
   def nil_to_zero(hash)
     zero_hash = {}
     hash.each do |key, value|
@@ -160,5 +171,5 @@ module MerchantAnalytics
       zero_hash[key] = value
     end
     zero_hash
-  end 
+  end
 end
